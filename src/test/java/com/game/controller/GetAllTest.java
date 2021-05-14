@@ -38,24 +38,7 @@ public class GetAllTest extends AbstractTest {
                 testsHelper.getAllPlayers());
         assertEquals("Возвращается не правильный результат при запросе GET /rest/players.", expected, actual);
     }
-/*
 
-    @Test
-    public void getAllWithoutFiltersReturnAllPlayers11() throws Exception {
-        ResultActions resultActions = mockMvc.perform(get("/rest/players?banned=false&minLevel=10&maxLevel=30"))
-     //   ResultActions resultActions = mockMvc.perform(get("/rest/players?banned=false&minLevel=10&maxLevel=30"))
-
-                .andExpect(status().isOk());
-
-        MvcResult result = resultActions.andReturn();
-        String contentAsString = result.getResponse().getContentAsString();
-
-        List<PlayerInfoTest> actual = mapper.readValue(contentAsString, typeReference);
-        List<PlayerInfoTest> expected = testsHelper.getPlayerInfosByPage(0, 3,
-                testsHelper.getAllPlayers());
-        assertEquals("Возвращается не правильный результат при запросе GET /rest/players.", expected, actual);
-    }
-*/
 
     //test2
     @Test

@@ -39,6 +39,48 @@ public class RpgService {
     public List<Player> findAll(Pageable pageable) {
         return rpgRepository.findAll(pageable).stream().collect(Collectors.toList());
     }
+    public Integer getPlayersCount(String name, String title, Race race, Profession profession, Long after, Long before, Boolean banned, Integer minExperience, Integer maxExperience, Integer minLevel, Integer maxLevel) {
+        PlayerEntitySpecification specification = new PlayerEntitySpecification();
+        if (name != null) {
+            specification.add(new SearchCriteria("name", name, SearchOperation.MATCH));
+        }
+        if (title != null) {
+            specification.add(new SearchCriteria("title", title, SearchOperation.MATCH));
+        }
+        if (race != null) {
+            specification.add(new SearchCriteria("race", race, SearchOperation.EQUAL));
+        }
+        if (profession != null) {
+            specification.add(new SearchCriteria("profession", profession, SearchOperation.EQUAL));
+        }
+        if (maxExperience != null) {
+            specification.add(new SearchCriteria("experience", maxExperience, SearchOperation.LESS_THAN));
+        }
+        if (banned != null) {
+            specification.add(new SearchCriteria("banned", banned, SearchOperation.EQUAL));
+        }
+        if (minExperience != null) {
+            specification.add(new SearchCriteria("experience", minExperience, SearchOperation.GREATER_THAN));
+        }
+        if (minLevel != null) {
+            specification.add(new SearchCriteria("level", minLevel, SearchOperation.GREATER_THAN));
+        }
+        if (maxLevel != null) {
+            specification.add(new SearchCriteria("level", maxLevel, SearchOperation.LESS_THAN));
+        }
+        List<Player> playerList = rpgRepository.findAll(specification);
+        if (after != null) {
+            playerList.removeIf(x -> x.getBirthday() < after);
+        }
+        if (before != null) {
+            playerList.removeIf(x -> x.getBirthday() > before);
+        }
+        playerList.forEach(System.out::println);
+
+        return playerList.size();
+
+    }
+
     public List<Player> getPlayerList(
             String name,
             String title,
@@ -51,7 +93,9 @@ public class RpgService {
             Integer maxExperience,
             Integer minLevel,
             Integer maxLevel,
-            PlayerOrder order) {
+            PlayerOrder order,
+            Integer pageNumber,
+            Integer pageSize) {
 
         PlayerEntitySpecification specification = new PlayerEntitySpecification();
         if (name != null) {
@@ -84,20 +128,6 @@ public class RpgService {
         if (order != null) {
             specification.add(new SearchCriteria("order", race, SearchOperation.EQUAL));
         }
-       /* Pageable pageable;
-        int pageNumber = Integer.parseInt(params.getOrDefault("pageNumber", "0"));
-        int pageSize = Integer.parseInt(params.getOrDefault("pageSize", "3"));
-        if (params.containsKey("order")) {
-            pageable = PageRequest.of(pageNumber, pageSize, Sort.Direction.ASC, (ShipOrder.valueOf(params.get("order"))).getFieldName());
-        } else {
-            pageable = PageRequest.of(pageNumber, pageSize);
-        }*/
-      /*  if (pageNumber != null) {
-            specification.add(new SearchCriteria("pageNumber", race, SearchOperation.EQUAL));
-        }
-        if (pageSize != null) {
-            specification.add(new SearchCriteria("pageSize", race, SearchOperation.EQUAL));
-        }*/
 
 
         List<Player> playerList = rpgRepository.findAll(specification);
@@ -108,7 +138,23 @@ public class RpgService {
             playerList.removeIf(x -> x.getBirthday() > before);
         }
 
+    //    if (pageNumber != null || pageSize != null) {
+            if (pageNumber == null) {
+                pageNumber = 0;
+            }
+            if (pageSize == null) {
+                pageSize = 3;
+            }
+            int firstElement = pageNumber * pageSize;
+            int a = playerList.size();
 
+
+            if (playerList.size() < ((pageNumber + 1) * pageSize)) {
+                playerList = playerList.subList(firstElement, playerList.size());
+            } else {
+                playerList = playerList.subList(firstElement, firstElement + pageSize );
+            }
+   //     }
         playerList.forEach(System.out::println);
 
         return playerList;
@@ -205,6 +251,7 @@ public class RpgService {
         rpgRepository.save(playerOptionalGet);
         return new ResponseEntity<>(playerOptionalGet, HttpStatus.OK);
     }
+
 
 /*    public List<Player> findByParams(Map<String, String> params) {
         String name = (String) params.getOrDefault("name", null);

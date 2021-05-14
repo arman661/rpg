@@ -9,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 public class RpgController {
@@ -66,6 +65,24 @@ public @ResponseBody ResponseEntity<List<Player>> getShipsList(@RequestParam Map
         return new ResponseEntity<List<Player>>(rpgService.findByParams(params), HttpStatus.OK);
     }
 }*/
+
+    @GetMapping("/rest/players/count")
+    public Integer getPlayersCount(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String title,
+            @RequestParam(required = false) Race race,
+            @RequestParam(required = false) Profession profession,
+            @RequestParam(required = false) Long after,
+            @RequestParam(required = false) Long before,
+            @RequestParam(required = false) Boolean banned,
+            @RequestParam(required = false) Integer minExperience,
+            @RequestParam(required = false) Integer maxExperience,
+            @RequestParam(required = false) Integer minLevel,
+            @RequestParam(required = false) Integer maxLevel) {
+        return rpgService.getPlayersCount(
+                name, title, race, profession, after, before, banned, minExperience, maxExperience, minLevel, maxLevel);
+    }
+
     @GetMapping("/rest/players")
     public ResponseEntity<List<Player>> getPlayerList(
             @RequestParam(required = false) String name,
@@ -100,7 +117,7 @@ public @ResponseBody ResponseEntity<List<Player>> getShipsList(@RequestParam Map
 
         } else {
             return new ResponseEntity<List<Player>>(rpgService.getPlayerList(
-                    name, title, race, profession, after, before, banned, minExperience, maxExperience, minLevel, maxLevel, order), HttpStatus.OK);
+                    name, title, race, profession, after, before, banned, minExperience, maxExperience, minLevel, maxLevel, order, pageNumber, pageSize), HttpStatus.OK);
 
          /*   return new ResponseEntity<List<Player>>(rpgService.getPlayerList(
                     name,
