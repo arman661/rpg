@@ -6,10 +6,7 @@ import com.game.controller.PlayerUpdateRequest;
 import com.game.entity.*;
 import com.game.repository.RpgRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Example;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -32,13 +29,11 @@ public class RpgService {
         }
     }
 
-    /*   public List<Player> findAll(Pageable pageable) {
-           return rpgRepository.findAll(pageable).stream().collect(Collectors.toList());
-       }*/
 
     public List<Player> findAll(Pageable pageable) {
         return rpgRepository.findAll(pageable).stream().collect(Collectors.toList());
     }
+
     public Integer getPlayersCount(String name, String title, Race race, Profession profession, Long after, Long before, Boolean banned, Integer minExperience, Integer maxExperience, Integer minLevel, Integer maxLevel) {
         PlayerEntitySpecification specification = new PlayerEntitySpecification();
         if (name != null) {
@@ -138,23 +133,23 @@ public class RpgService {
             playerList.removeIf(x -> x.getBirthday() > before);
         }
 
-    //    if (pageNumber != null || pageSize != null) {
-            if (pageNumber == null) {
-                pageNumber = 0;
-            }
-            if (pageSize == null) {
-                pageSize = 3;
-            }
-            int firstElement = pageNumber * pageSize;
-            int a = playerList.size();
+        //    if (pageNumber != null || pageSize != null) {
+        if (pageNumber == null) {
+            pageNumber = 0;
+        }
+        if (pageSize == null) {
+            pageSize = 3;
+        }
+        int firstElement = pageNumber * pageSize;
+        int a = playerList.size();
 
 
-            if (playerList.size() < ((pageNumber + 1) * pageSize)) {
-                playerList = playerList.subList(firstElement, playerList.size());
-            } else {
-                playerList = playerList.subList(firstElement, firstElement + pageSize );
-            }
-   //     }
+        if (playerList.size() < ((pageNumber + 1) * pageSize)) {
+            playerList = playerList.subList(firstElement, playerList.size());
+        } else {
+            playerList = playerList.subList(firstElement, firstElement + pageSize);
+        }
+        //     }
         playerList.forEach(System.out::println);
 
         return playerList;
@@ -251,66 +246,4 @@ public class RpgService {
         rpgRepository.save(playerOptionalGet);
         return new ResponseEntity<>(playerOptionalGet, HttpStatus.OK);
     }
-
-
-/*    public List<Player> findByParams(Map<String, String> params) {
-        String name = (String) params.getOrDefault("name", null);
-        String title = (String) params.getOrDefault("title", null);
-        Race race = params.containsKey("race") ? Race.valueOf((String) params.get("race")) : null;
-        Calendar calendar = Calendar.getInstance();
-        Date after = null;
-        if (params.containsKey("after")) {
-            after = new Date(Long.parseLong(params.get("after")));
-        }
-        Date before = null;
-        if (params.containsKey("before")) {
-            before = new Date(Long.parseLong(params.get("before")));
-        }
-        Boolean banned = params.containsKey("banned") ? Boolean.parseBoolean(params.get("banned")) : null;
-        Double minExperience = params.containsKey("minExperience") ? Double.parseDouble(params.get("minExperience")) : null;
-        Double maxExperience = params.containsKey("maxExperience") ? Double.parseDouble(params.get("maxExperience")) : null;
-        Integer minLevel = params.containsKey("minLevel") ? Integer.parseInt(params.get("minLevel")) : null;
-        Integer maxLevel = params.containsKey("maxLevel") ? Integer.parseInt(params.get("maxLevel")) : null;
-
-        Pageable pageable;
-        int pageNumber = Integer.parseInt(params.getOrDefault("pageNumber", "0"));
-        int pageSize = Integer.parseInt(params.getOrDefault("pageSize", "3"));
-
-        if (params.containsKey("order")) {
-            pageable = PageRequest.of(pageNumber, pageSize, Sort.Direction.ASC, (PlayerOrder.valueOf(params.get("order"))).getFieldName());
-        } else {
-            pageable = PageRequest.of(pageNumber, pageSize);
-        }
-
-        return rpgRepository.findAllByParams(name, title, race, after, before, banned, minExperience, maxExperience, minLevel, maxLevel, pageable).stream().collect(Collectors.toList());
-    }*/
-
-//    public List<Player> findByParams(Map<String, String> params) {
-//        String name = (String) params.getOrDefault("name", null);
-//        String title = (String) params.getOrDefault("title", null);
-//        Race race = params.containsKey("race") ? Race.valueOf((String) params.get("race")) : null;
-//
-//        return rpgRepository.findAllByParams(name, title);
-//    }
-
-
-//        {
-//            "name": "Arman",
-//                "title": "armyan",
-//                "race": "GIANT",
-//                "profession": "WARRIOR",
-//                "birthday": 28,
-//                "banned": false,
-//                "experience": 0
-//       }
-
-
-//    public ResponseEntity<List<Player>> getPlayerList(PlayerRequest playerRequest) {
-//
-//        Player playerToFind = new Player();
-//        playerToFind.setName(name);
-//        Example<Player> example = Example.of(playerToFind);
-//
-//        return new ResponseEntity<>(rpgRepository.findAll(example), HttpStatus.OK);
-//    }
 }

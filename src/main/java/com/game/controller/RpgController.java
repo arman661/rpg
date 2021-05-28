@@ -53,18 +53,6 @@ public class RpgController {
         }
     }
 
-    //    @GetMapping("/rest/players")
-//    public ResponseEntity<List<Player>> getPlayerList(@RequestParam Map<String, String> params) {
-//        return new ResponseEntity<List<Player>>(rpgService.findByParams(params), HttpStatus.OK);
-//    }
-/*@GetMapping()
-public @ResponseBody ResponseEntity<List<Player>> getShipsList(@RequestParam Map<String, String> params){
-    if (params.isEmpty()) {
-        return new ResponseEntity<List<Player>>(rpgService.findAll(PageRequest.of(0, 3)), HttpStatus.OK);
-    } else {
-        return new ResponseEntity<List<Player>>(rpgService.findByParams(params), HttpStatus.OK);
-    }
-}*/
 
     @GetMapping("/rest/players/count")
     public Integer getPlayersCount(
@@ -118,23 +106,6 @@ public @ResponseBody ResponseEntity<List<Player>> getShipsList(@RequestParam Map
         } else {
             return new ResponseEntity<List<Player>>(rpgService.getPlayerList(
                     name, title, race, profession, after, before, banned, minExperience, maxExperience, minLevel, maxLevel, order, pageNumber, pageSize), HttpStatus.OK);
-
-         /*   return new ResponseEntity<List<Player>>(rpgService.getPlayerList(
-                    name,
-                    title,
-                    race,
-                    profession,
-                    after,
-                    before,
-                    banned,
-                    minExperience,
-                    maxExperience,
-                    minLevel,
-                    maxLevel,
-                    order,
-                    pageNumber,
-                    pageSize
-            ));*/
         }
     }
 
@@ -153,21 +124,7 @@ public @ResponseBody ResponseEntity<List<Player>> getShipsList(@RequestParam Map
 
     }
 
-//    @GetMapping("/rest/players/{id}")
-//    public void deletePlayer(@PathVariable Object id) {
-//        try {
-//            Long newLong = Long.parseLong(id.toString());
-//            if (newLong > 0) {
-//                rpgService.deletePlayer(newLong);
-//            } else {
-//                new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-//            }
-//        }
-//         catch(NumberFormatException e) {
-//             new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-//            }
-//
-//    }
+
 
 }
 
